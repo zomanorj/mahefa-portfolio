@@ -420,7 +420,7 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
       <p data-i18n="intro" class="hero__intro">I learned logistics where it actually shows: on a construction site, in a stockroom, and at an international freight desk. Now I'm pairing that ground-level experience with ERP, analytics and process discipline, so every order lands where it should, when it should.</p>
 
       <div class="hero__actions">
-        <a class="btn btn--primary" href="assets/Mahefa-Rajaonah-Resume.pdf" download="Mahefa-Rajaonah-Resume.pdf">
+        <a class="btn btn--primary" href="assets/Mahefa-Rajaonah-Resume.pdf" download="Mahefa-Rajaonah-Resume.pdf" data-cv>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
           <span data-i18n="cv">Download CV</span> <span data-i18n="cvMeta" class="btn__meta">PDF</span>
         </a>
@@ -645,7 +645,7 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
           (416) 688-3947
         </a>
         <a class="btn btn--subtle" href="https://www.linkedin.com/in/mahefa-rajaonah" target="_blank" rel="noopener">LinkedIn ↗</a>
-        <a class="btn btn--subtle" href="assets/Mahefa-Rajaonah-Resume.pdf" download="Mahefa-Rajaonah-Resume.pdf">
+        <a class="btn btn--subtle" href="assets/Mahefa-Rajaonah-Resume.pdf" download="Mahefa-Rajaonah-Resume.pdf" data-cv>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
           <span data-i18n="cv">Download CV</span>
         </a>
@@ -720,7 +720,7 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
 "role": "Coordonnateur logistique<i>·</i>Chaîne d'approvisionnement<i>·</i>Bilingue français et anglais",
 "intro": "J'ai appris la logistique là où elle se voit vraiment&nbsp;: sur un chantier, dans un magasin de stock et à un comptoir de fret international. J'allie aujourd'hui cette expérience terrain à l'ERP, à l'analytique et à la rigueur des processus, pour que chaque commande arrive où elle doit, quand elle le doit.",
 "cv": "Télécharger le CV",
-"cvMeta": "PDF · EN",
+"cvMeta": "PDF",
 "touch": "Me contacter",
 "statSeek": "Poste recherché",
 "stat1": "Fret, inventaire et gestion des matériaux<br><span>Plus de 4 ans, 2021–2025</span>",
@@ -807,9 +807,11 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
   const FR_ATTR = {"brandAria": "Mahefa Rajaonah, retour en haut", "navAria": "Principal", "imgAlt": "Portrait de Mahefa Rajaonah", "langAria": "Langue"};
   const UI = {
     en: { light: 'Switch to light theme', dark: 'Switch to dark theme', open: 'Open menu', close: 'Close menu',
-          title: 'Mahefa Rajaonah | Logistics Coordinator' },
+          title: 'Mahefa Rajaonah | Logistics Coordinator',
+          cvHref: 'assets/Mahefa-Rajaonah-Resume.pdf', cvFile: 'Mahefa-Rajaonah-Resume.pdf' },
     fr: { light: 'Passer au thème clair', dark: 'Passer au thème sombre', open: 'Ouvrir le menu', close: 'Fermer le menu',
-          title: 'Mahefa Rajaonah | Coordonnateur logistique' }
+          title: 'Mahefa Rajaonah | Coordonnateur logistique',
+          cvHref: 'assets/Mahefa-Rajaonah-CV-FR.pdf', cvFile: 'Mahefa-Rajaonah-CV.pdf' }
   };
   const textEls = [...document.querySelectorAll('[data-i18n]')].map(el => [el, el.innerHTML]);
   const attrEls = [...document.querySelectorAll('[data-i18n-attr]')].map(el => {
@@ -832,6 +834,10 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
     langToggle.setAttribute('lang', other);
     langToggle.setAttribute('aria-label', other === 'fr' ? 'Afficher en français' : 'View in English');
     document.title = t('title');
+    document.querySelectorAll('[data-cv]').forEach(a => {
+      a.setAttribute('href', t('cvHref'));
+      a.setAttribute('download', t('cvFile'));
+    });
     syncTheme();
     setMenu(btn.getAttribute('aria-expanded') === 'true');
   };
