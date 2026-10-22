@@ -183,6 +183,7 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
 .btn--ghost{border-color:rgba(63,208,138,.45);color:var(--text);font-weight:600;font-size:15px}
 .btn--subtle{border-color:rgba(255,255,255,.16);color:var(--text);font-weight:600;font-size:15px}
 .btn svg{width:16px;height:16px;flex:none}
+.btn__meta{font-family:var(--f-mono);font-size:11px;font-weight:500;letter-spacing:.04em;padding:2px 6px;border-radius:4px;background:rgba(6,26,46,.12)}
 @media (hover:hover){
   .btn--primary:hover{background:var(--gold-hover);color:var(--bg)}
   .btn--ghost:hover,.btn--subtle:hover{border-color:var(--green);color:var(--green);background:rgba(63,208,138,.08)}
@@ -192,7 +193,7 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
 }
 @media (max-width:380px){
   .btn{padding:12px 16px;font-size:14px}
-  .btn--primary svg{display:none}
+  .contact__actions .btn--primary svg{display:none}
 }
 
 /* ---------- Profile ---------- */
@@ -337,8 +338,11 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
       <p class="hero__intro">I learned logistics where it actually shows: on a construction site, in a stockroom, and at an international freight desk. Now I'm pairing that ground-level experience with ERP, analytics and process discipline, so every order lands where it should, when it should.</p>
 
       <div class="hero__actions">
-        <a class="btn btn--primary" href="#contact">Get in touch</a>
-        <a class="btn btn--ghost" href="#journey">View experience</a>
+        <a class="btn btn--primary" href="assets/Mahefa-Rajaonah-Resume.pdf" download="Mahefa-Rajaonah-Resume.pdf">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+          Download CV <span class="btn__meta">PDF</span>
+        </a>
+        <a class="btn btn--ghost" href="#contact">Get in touch</a>
       </div>
 
       <div class="stats">
@@ -597,6 +601,10 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
           (416) 688-3947
         </a>
         <a class="btn btn--subtle" href="https://www.linkedin.com/in/mahefa-rajaonah" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a class="btn btn--subtle" href="assets/Mahefa-Rajaonah-Resume.pdf" download="Mahefa-Rajaonah-Resume.pdf">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+          Download CV
+        </a>
       </div>
     </div>
     <footer class="footer">© 2026 Andriamaharo Zo Mahefa Rajaonah</footer>
