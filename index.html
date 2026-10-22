@@ -125,6 +125,10 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
 .header__actions{display:flex;align-items:center;gap:clamp(12px,2vw,24px)}
 .brand{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:600;font-size:15px;color:var(--text);white-space:nowrap}
 .brand:hover{color:var(--text)}
+.brand{min-width:0}
+.brand__mark{flex:none}
+.brand__name{overflow:hidden;text-overflow:ellipsis}
+.header__actions{flex:none}
 .brand__mark{display:grid;place-items:center;width:30px;height:30px;border-radius:7px;background:var(--accent);color:var(--on-accent);font-family:var(--f-display);font-weight:800;font-size:12px;letter-spacing:.02em;transition:background-color .2s}
 
 .nav{display:flex;align-items:center;gap:clamp(16px,2.4vw,28px);font-size:14px;font-weight:500}
@@ -371,7 +375,7 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
 
 <header class="header">
   <div class="wrap header__bar">
-    <a class="brand" href="#top" aria-label="Mahefa Rajaonah, back to top" data-i18n-attr="aria-label:brandAria"><span class="brand__mark" aria-hidden="true">MR</span>Mahefa Rajaonah</a>
+    <a class="brand" href="#top" aria-label="Mahefa Rajaonah, back to top" data-i18n-attr="aria-label:brandAria"><span class="brand__mark" aria-hidden="true">MR</span><span class="brand__name">Mahefa Rajaonah</span></a>
     <div class="header__actions">
       <nav class="nav" id="site-nav" aria-label="Main" data-i18n-attr="aria-label:navAria">
         <a data-i18n="navProfile" href="#profile">Profile</a>
