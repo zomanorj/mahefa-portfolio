@@ -170,8 +170,8 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
   .nav.is-open{visibility:visible;opacity:1;transform:none;transition:opacity .25s var(--ease),transform .25s var(--ease)}
   .nav a{padding:14px 0;border-bottom:1px solid var(--line);color:var(--text-2)}
   .nav a::after{display:none}
-  .nav .lang{align-self:center;margin-top:16px}
-  .nav .lang button{min-width:56px;height:40px;font-size:14px}
+  .nav .lang{display:none}
+  .header__actions .lang-toggle{display:inline-flex}
   .nav a.nav__cta{border-bottom:0;margin-top:14px;padding:14px;text-align:center;background:var(--gold);color:var(--on-gold);border-radius:8px;font-family:var(--f-display);font-weight:600}
 }
 
@@ -180,6 +180,7 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
 .lang button{min-width:34px;height:32px;padding:0 8px;border:0;border-radius:7px;background:none;color:var(--text-3);font:600 12.5px/1 var(--f-body);letter-spacing:.03em;cursor:pointer;transition:color .2s,background-color .2s}
 .lang button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent)}
 @media (hover:hover){.lang button:not([aria-pressed="true"]):hover{color:var(--text)}}
+.lang-toggle{display:none;font:600 13px/1 var(--f-body);letter-spacing:.03em}
 .i18n-pending main,.i18n-pending .header{visibility:hidden}
 
 /* ---------- Sections ---------- */
@@ -226,6 +227,12 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
   .stat+.stat{border-left:0;border-top:1px solid var(--line-2)}
   .stat{display:grid;grid-template-columns:110px 1fr;gap:12px;align-items:baseline}
   .stat__label{margin:0}
+}
+@media (max-width:380px){
+  .header__bar{gap:12px}
+  .header__actions{gap:6px}
+  .icon-btn{width:36px;height:36px}
+  .brand{font-size:14px;gap:8px}
 }
 @media (max-width:380px){
   .hero__top{column-gap:12px;padding-left:16px;padding-right:16px}
@@ -378,6 +385,7 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
           <button type="button" lang="fr" data-lang="fr" aria-pressed="false">FR</button>
         </div>
       </nav>
+      <button class="icon-btn lang-toggle" type="button" lang="fr" aria-label="Afficher en français">FR</button>
       <button class="icon-btn theme-toggle" type="button" aria-label="Switch to light theme">
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg>
@@ -807,6 +815,7 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
   const root = document.documentElement;
   let lang = root.getAttribute('data-lang') === 'fr' ? 'fr' : 'en';
   const t = key => UI[lang][key];
+  const langToggle = document.querySelector('.lang-toggle');
   const applyLang = next => {
     lang = next;
     root.setAttribute('lang', lang);
@@ -814,16 +823,23 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
     textEls.forEach(([el, en]) => { el.innerHTML = lang === 'fr' ? FR[el.getAttribute('data-i18n')] : en; });
     attrEls.forEach(([el, attr, key, en]) => el.setAttribute(attr, lang === 'fr' ? FR_ATTR[key] : en));
     document.querySelectorAll('.lang button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
+    const other = lang === 'fr' ? 'en' : 'fr';
+    langToggle.textContent = other.toUpperCase();
+    langToggle.setAttribute('lang', other);
+    langToggle.setAttribute('aria-label', other === 'fr' ? 'Afficher en français' : 'View in English');
     document.title = t('title');
     syncTheme();
     setMenu(btn.getAttribute('aria-expanded') === 'true');
   };
+  const setLang = next => {
+    try { localStorage.setItem('lang', next); } catch (err) {}
+    applyLang(next);
+  };
   document.querySelector('.lang').addEventListener('click', e => {
     const b = e.target.closest('button[data-lang]');
-    if (!b || b.dataset.lang === lang) return;
-    try { localStorage.setItem('lang', b.dataset.lang); } catch (err) {}
-    applyLang(b.dataset.lang);
+    if (b && b.dataset.lang !== lang) setLang(b.dataset.lang);
   });
+  langToggle.addEventListener('click', () => setLang(lang === 'fr' ? 'en' : 'fr'));
 
   // Theme toggle
   const toggle = document.querySelector('.theme-toggle');
