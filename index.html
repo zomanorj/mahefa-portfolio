@@ -131,16 +131,20 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
 /* ---------- Hero ---------- */
 .hero{padding:clamp(24px,5vw,56px) 0 clamp(48px,7vw,56px)}
 .hero__card{border:1px solid var(--line-2);border-radius:16px;background:var(--surface);overflow:hidden}
-.hero__top{display:grid;grid-template-columns:1fr auto;gap:clamp(20px,4vw,40px);align-items:start;padding:clamp(28px,5vw,48px) clamp(20px,4vw,32px) 0}
-.hero__photo{width:clamp(96px,16vw,168px);aspect-ratio:1;border-radius:50%;animation:photoRing 2.2s ease-out infinite}
+.hero__top{
+  display:grid;grid-template-columns:1fr auto;column-gap:clamp(20px,4vw,40px);align-items:start;
+  grid-template-areas:"meta photo" "name photo" "role photo";
+  padding:clamp(28px,5vw,48px) clamp(20px,4vw,32px) 0;
+}
+.hero__photo{grid-area:photo;width:clamp(120px,16vw,168px);aspect-ratio:1;border-radius:50%;animation:photoRing 2.2s ease-out infinite}
 .hero__photo img{width:100%;height:100%;border-radius:50%;object-fit:cover}
-.hero__meta{display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;margin-bottom:24px}
+.hero__meta{grid-area:meta;display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;margin-bottom:24px}
 .badge{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:999px;background:rgba(255,201,60,.12);border:1px solid rgba(255,201,60,.4);color:var(--gold);font-size:13px;font-weight:500;white-space:nowrap}
 .badge::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--gold)}
 .hero__loc{font-size:14px;color:var(--text-3)}
-.hero__name{font-weight:700;font-size:clamp(2rem,5.4vw,3.7rem);line-height:1.04;letter-spacing:-.02em;margin-bottom:16px}
+.hero__name{grid-area:name;font-weight:700;font-size:clamp(2rem,5.4vw,3.7rem);line-height:1.04;letter-spacing:-.02em;margin-bottom:16px}
 .hero__name span{color:var(--green)}
-.hero__role{font-family:var(--f-display);font-size:clamp(1rem,2vw,1.25rem);font-weight:500;color:rgba(238,244,248,.8);margin-bottom:20px;line-height:1.45}
+.hero__role{grid-area:role;font-family:var(--f-display);font-size:clamp(1rem,2vw,1.25rem);font-weight:500;color:rgba(238,244,248,.8);margin-bottom:20px;line-height:1.45}
 .hero__role i{font-style:normal;color:var(--text-4);padding:0 .25em}
 .hero__intro{padding:0 clamp(20px,4vw,32px);max-width:calc(58ch + 64px);color:var(--text-2);font-size:clamp(1rem,1.6vw,1.05rem);line-height:1.65;margin-bottom:28px}
 .hero__actions{display:flex;flex-wrap:wrap;gap:12px;padding:0 clamp(20px,4vw,32px);margin-bottom:34px}
@@ -155,8 +159,9 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
 .stat__value span{color:var(--text-4)}
 
 @media (max-width:720px){
-  .hero__top{grid-template-columns:1fr}
-  .hero__photo{order:-1}
+  .hero__top{grid-template-columns:auto minmax(0,1fr);column-gap:16px;grid-template-areas:"photo meta" "name name" "role role"}
+  .hero__photo{width:76px;align-self:center;margin-bottom:24px}
+  .hero__meta{flex-direction:column;align-items:flex-start;gap:6px;align-self:center}
   .stats{grid-template-columns:1fr}
   .stat,.stat:first-child,.stat:last-child{padding:16px 0}
   .stat+.stat{border-left:0;border-top:1px solid var(--line-2)}
@@ -164,6 +169,12 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
   .stat__label{margin:0}
 }
 @media (max-width:380px){
+  .hero__top{column-gap:12px;padding-left:16px;padding-right:16px}
+  .hero__intro,.hero__actions{padding-left:16px;padding-right:16px}
+  .stats{margin-left:16px;margin-right:16px}
+  .hero__photo{width:60px}
+  .badge{font-size:12px;padding:4px 10px;gap:6px}
+  .hero__loc{font-size:13px}
   .stat{grid-template-columns:1fr;gap:4px}
 }
 
@@ -313,17 +324,15 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
   <section class="hero" id="top" aria-label="Introduction">
     <div class="hero__card" data-reveal>
       <div class="hero__top">
-        <div>
-          <div class="hero__meta">
-            <span class="badge">Available for opportunities</span>
-            <span class="hero__loc">Oshawa, Ontario, Canada</span>
-          </div>
-          <h1 class="hero__name">Andriamaharo Zo Mahefa <span>Rajaonah</span></h1>
-          <div class="hero__role">Logistics Coordinator<i>·</i>Supply Chain Management<i>·</i>Bilingual French &amp; English</div>
-        </div>
         <div class="hero__photo">
           <img src="assets/profile-photo.webp" alt="Portrait of Mahefa Rajaonah" width="168" height="168" fetchpriority="high">
         </div>
+        <div class="hero__meta">
+          <span class="badge">Available for opportunities</span>
+          <span class="hero__loc">Oshawa, Ontario, Canada</span>
+        </div>
+        <h1 class="hero__name">Andriamaharo Zo Mahefa <span>Rajaonah</span></h1>
+        <div class="hero__role">Logistics Coordinator<i>·</i>Supply Chain Management<i>·</i>Bilingual French &amp; English</div>
       </div>
 
       <p class="hero__intro">I learned logistics where it actually shows: on a construction site, in a stockroom, and at an international freight desk. Now I'm pairing that ground-level experience with ERP, analytics and process discipline, so every order lands where it should, when it should.</p>
