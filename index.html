@@ -18,6 +18,10 @@
 (function(){
   var d=document.documentElement;d.classList.add('js');
   try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')d.setAttribute('data-theme',t)}catch(e){}
+  var l=new URLSearchParams(location.search).get('lang');
+  if(l!=='en'&&l!=='fr'){try{l=localStorage.getItem('lang')}catch(e){}}
+  if(l!=='en'&&l!=='fr')l=/^fr\b/i.test(navigator.language||'')?'fr':'en';
+  d.setAttribute('data-lang',l);if(l==='fr')d.classList.add('i18n-pending');
 })();
 </script>
 <style>
@@ -124,7 +128,7 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
 .brand__mark{display:grid;place-items:center;width:30px;height:30px;border-radius:7px;background:var(--accent);color:var(--on-accent);font-family:var(--f-display);font-weight:800;font-size:12px;letter-spacing:.02em;transition:background-color .2s}
 
 .nav{display:flex;align-items:center;gap:clamp(16px,2.4vw,28px);font-size:14px;font-weight:500}
-.nav a{color:var(--text-3);padding:6px 0;position:relative}
+.nav a{color:var(--text-3);padding:6px 0;position:relative;white-space:nowrap}
 .nav a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--accent);transform:scaleX(0);transition:transform .25s var(--ease)}
 .nav a:hover,.nav a[aria-current="true"]{color:var(--accent)}
 .nav a[aria-current="true"]::after{transform:scaleX(1)}
@@ -149,7 +153,7 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
 .menu-btn[aria-expanded="true"] .menu-btn__icon span:nth-child(2){opacity:0}
 .menu-btn[aria-expanded="true"] .menu-btn__icon span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
 
-@media (max-width:860px){
+@media (max-width:980px){
   .menu-btn{display:inline-flex}
   .header__actions{gap:8px}
   .nav{
@@ -166,8 +170,17 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
   .nav.is-open{visibility:visible;opacity:1;transform:none;transition:opacity .25s var(--ease),transform .25s var(--ease)}
   .nav a{padding:14px 0;border-bottom:1px solid var(--line);color:var(--text-2)}
   .nav a::after{display:none}
+  .nav .lang{align-self:center;margin-top:16px}
+  .nav .lang button{min-width:56px;height:40px;font-size:14px}
   .nav a.nav__cta{border-bottom:0;margin-top:14px;padding:14px;text-align:center;background:var(--gold);color:var(--on-gold);border-radius:8px;font-family:var(--f-display);font-weight:600}
 }
+
+/* ---------- Language switch ---------- */
+.lang{display:inline-flex;gap:2px;padding:3px;border:1px solid var(--line-2);border-radius:10px}
+.lang button{min-width:34px;height:32px;padding:0 8px;border:0;border-radius:7px;background:none;color:var(--text-3);font:600 12.5px/1 var(--f-body);letter-spacing:.03em;cursor:pointer;transition:color .2s,background-color .2s}
+.lang button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent)}
+@media (hover:hover){.lang button:not([aria-pressed="true"]):hover{color:var(--text)}}
+.i18n-pending main,.i18n-pending .header{visibility:hidden}
 
 /* ---------- Sections ---------- */
 .section{padding:var(--section-y) 0;border-top:1px solid var(--line)}
@@ -346,20 +359,24 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
 </style>
 </head>
 <body>
-<a class="skip" href="#main">Skip to content</a>
+<a data-i18n="skip" class="skip" href="#main">Skip to content</a>
 <div class="progress" aria-hidden="true"><span></span></div>
 
 <header class="header">
   <div class="wrap header__bar">
-    <a class="brand" href="#top" aria-label="Mahefa Rajaonah, back to top"><span class="brand__mark" aria-hidden="true">MR</span>Mahefa Rajaonah</a>
+    <a class="brand" href="#top" aria-label="Mahefa Rajaonah, back to top" data-i18n-attr="aria-label:brandAria"><span class="brand__mark" aria-hidden="true">MR</span>Mahefa Rajaonah</a>
     <div class="header__actions">
-      <nav class="nav" id="site-nav" aria-label="Main">
-        <a href="#profile">Profile</a>
-        <a href="#journey">Experience</a>
-        <a href="#skills">Skills</a>
-        <a href="#projects">Projects</a>
-        <a href="#education">Education</a>
-        <a href="#contact" class="nav__cta">Contact</a>
+      <nav class="nav" id="site-nav" aria-label="Main" data-i18n-attr="aria-label:navAria">
+        <a data-i18n="navProfile" href="#profile">Profile</a>
+        <a data-i18n="navExp" href="#journey">Experience</a>
+        <a data-i18n="navSkills" href="#skills">Skills</a>
+        <a data-i18n="navProjects" href="#projects">Projects</a>
+        <a data-i18n="navEdu" href="#education">Education</a>
+        <a data-i18n="navContact" href="#contact" class="nav__cta">Contact</a>
+        <div class="lang" role="group" aria-label="Language" data-i18n-attr="aria-label:langAria">
+          <button type="button" lang="en" data-lang="en" aria-pressed="true">EN</button>
+          <button type="button" lang="fr" data-lang="fr" aria-pressed="false">FR</button>
+        </div>
       </nav>
       <button class="icon-btn theme-toggle" type="button" aria-label="Switch to light theme">
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
@@ -378,181 +395,181 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
     <div class="hero__card" data-reveal>
       <div class="hero__top">
         <div class="hero__photo">
-          <img src="assets/profile-photo.webp" alt="Portrait of Mahefa Rajaonah" width="168" height="168" fetchpriority="high">
+          <img src="assets/profile-photo.webp" alt="Portrait of Mahefa Rajaonah" data-i18n-attr="alt:imgAlt" width="168" height="168" fetchpriority="high">
         </div>
         <div class="hero__meta">
-          <span class="badge">Available for opportunities</span>
-          <span class="hero__loc">Oshawa, Ontario, Canada</span>
+          <span data-i18n="badge" class="badge">Available for opportunities</span>
+          <span data-i18n="loc" class="hero__loc">Oshawa, Ontario, Canada</span>
         </div>
         <h1 class="hero__name">Andriamaharo Zo Mahefa <span>Rajaonah</span></h1>
-        <div class="hero__role">Logistics Coordinator<i>·</i>Supply Chain Management<i>·</i>Bilingual French &amp; English</div>
+        <div data-i18n="role" class="hero__role">Logistics Coordinator<i>·</i>Supply Chain Management<i>·</i>Bilingual French &amp; English</div>
       </div>
 
-      <p class="hero__intro">I learned logistics where it actually shows: on a construction site, in a stockroom, and at an international freight desk. Now I'm pairing that ground-level experience with ERP, analytics and process discipline, so every order lands where it should, when it should.</p>
+      <p data-i18n="intro" class="hero__intro">I learned logistics where it actually shows: on a construction site, in a stockroom, and at an international freight desk. Now I'm pairing that ground-level experience with ERP, analytics and process discipline, so every order lands where it should, when it should.</p>
 
       <div class="hero__actions">
         <a class="btn btn--primary" href="assets/Mahefa-Rajaonah-Resume.pdf" download="Mahefa-Rajaonah-Resume.pdf">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
-          Download CV <span class="btn__meta">PDF</span>
+          <span data-i18n="cv">Download CV</span> <span data-i18n="cvMeta" class="btn__meta">PDF</span>
         </a>
-        <a class="btn btn--ghost" href="#contact">Get in touch</a>
+        <a data-i18n="touch" class="btn btn--ghost" href="#contact">Get in touch</a>
       </div>
 
       <div class="stats">
         <div class="stat">
-          <div class="stat__label">Experience</div>
-          <div class="stat__value">Freight, inventory &amp; materials management<br><span>4+ years, 2021–2025</span></div>
+          <div data-i18n="navExp" class="stat__label">Experience</div>
+          <div data-i18n="stat1" class="stat__value">Freight, inventory &amp; materials management<br><span>4+ years, 2021–2025</span></div>
         </div>
         <div class="stat">
-          <div class="stat__label">Seeking</div>
-          <div class="stat__value">Logistics &amp; supply chain<br><span>Ontario, Canada</span></div>
+          <div data-i18n="statSeek" class="stat__label">Seeking</div>
+          <div data-i18n="stat2" class="stat__value">Logistics &amp; supply chain<br><span>Ontario, Canada</span></div>
         </div>
         <div class="stat">
-          <div class="stat__label">Education</div>
-          <div class="stat__value">Graduate Certificate, SCM<br><span>Durham College, 2026</span></div>
+          <div data-i18n="navEdu" class="stat__label">Education</div>
+          <div data-i18n="stat3" class="stat__value">Graduate Certificate, SCM<br><span>Durham College, 2026</span></div>
         </div>
       </div>
     </div>
   </section>
 
   <section class="section" id="profile" aria-labelledby="profile-title">
-    <h2 class="section__title" data-reveal id="profile-title">Professional Profile</h2>
+    <h2 data-i18n="hProfile" class="section__title" data-reveal id="profile-title">Professional Profile</h2>
     <div class="profile">
       <div class="prose" data-reveal>
-        <p>I started on construction sites, with a drawing in hand, making sure materials showed up before the crew did. On a 100+ villa residential development for <strong>SCB SA</strong>, and in parallel at a building-materials distributor handling 100+ deliveries a month, I learned how fragile the link is between a stockroom, a supplier and a site that won't wait.</p>
-        <p>Then I moved into freight. As a Logistics Coordinator at <strong>DHL Global Forwarding</strong>, I scheduled air, ocean and road shipments, and compared quotes from 10+ carriers, working daily in CargoWise One, myDHLi and Power BI.</p>
-        <p>Now in Oshawa, I've completed a Graduate Certificate in Supply Chain Management at Durham College. It gave me the method (SAP S/4HANA, analytics, continuous improvement) to turn what I already did by instinct into decisions you can measure. I work fluently in both French and English.</p>
+        <p data-i18n="p1">I started on construction sites, with a drawing in hand, making sure materials showed up before the crew did. On a 100+ villa residential development for <strong>SCB SA</strong>, and in parallel at a building-materials distributor handling 100+ deliveries a month, I learned how fragile the link is between a stockroom, a supplier and a site that won't wait.</p>
+        <p data-i18n="p2">Then I moved into freight. As a Logistics Coordinator at <strong>DHL Global Forwarding</strong>, I scheduled air, ocean and road shipments, and compared quotes from 10+ carriers, working daily in CargoWise One, myDHLi and Power BI.</p>
+        <p data-i18n="p3">Now in Oshawa, I've completed a Graduate Certificate in Supply Chain Management at Durham College. It gave me the method (SAP S/4HANA, analytics, continuous improvement) to turn what I already did by instinct into decisions you can measure. I work fluently in both French and English.</p>
       </div>
       <div data-reveal>
         <div class="grade">
           <div class="grade__value">4.78<span>/5</span></div>
-          <div class="grade__label">Grade, Graduate Certificate, Durham College</div>
+          <div data-i18n="grade" class="grade__label">Grade, Graduate Certificate, Durham College</div>
         </div>
         <div class="metrics">
-          <div class="metric"><div class="metric__value">4+ years</div><div class="metric__label">Freight, inventory and materials management</div></div>
-          <div class="metric"><div class="metric__value">95%</div><div class="metric__label">On-time delivery rate at DHL</div></div>
-          <div class="metric"><div class="metric__value">20+ / week</div><div class="metric__label">Freight shipments coordinated</div></div>
-          <div class="metric"><div class="metric__value">FR / EN</div><div class="metric__label">Fluent in both</div></div>
+          <div class="metric"><div data-i18n="m1v" class="metric__value">4+ years</div><div data-i18n="m1" class="metric__label">Freight, inventory and materials management</div></div>
+          <div class="metric"><div data-i18n="m2v" class="metric__value">95%</div><div data-i18n="m2" class="metric__label">On-time delivery rate at DHL</div></div>
+          <div class="metric"><div data-i18n="m3v" class="metric__value">20+ / week</div><div data-i18n="m3" class="metric__label">Freight shipments coordinated</div></div>
+          <div class="metric"><div class="metric__value">FR / EN</div><div data-i18n="m4" class="metric__label">Fluent in both</div></div>
         </div>
       </div>
     </div>
   </section>
 
   <section class="section" id="journey" aria-labelledby="journey-title">
-    <h2 class="section__title" data-reveal id="journey-title">Professional Experience</h2>
+    <h2 data-i18n="hExp" class="section__title" data-reveal id="journey-title">Professional Experience</h2>
 
     <ol class="timeline">
       <li class="job" data-reveal>
         <div class="job__head">
-          <h3 class="job__title">Logistics Coordinator</h3>
-          <div class="job__date">MAY 2024 – DEC 2025</div>
+          <h3 data-i18n="j1t" class="job__title">Logistics Coordinator</h3>
+          <div data-i18n="j1d" class="job__date">MAY 2024 – DEC 2025</div>
         </div>
         <div class="job__org">DHL Global Forwarding</div>
         <ul class="bullets">
-          <li>Coordinated scheduling, routing and documentation for 20+ shipments a week across air, ocean and road, holding a 95% on-time delivery rate.</li>
-          <li>Obtained and compared freight quotes from 10+ carriers to support rate decisions on inbound and outbound freight.</li>
-          <li>Entered freight orders in CargoWise One, working with Sales and Customer Service so details and documents were right the first time.</li>
-          <li>Tracked shipments in myDHLi and Sales360 CRM, keeping internal teams and stakeholders updated on status and timelines.</li>
-          <li>Resolved shipment and process issues with Operations, Warehouse and Sales, and maintained KPI dashboards in Power BI for leadership.</li>
+          <li data-i18n="j1b1">Coordinated scheduling, routing and documentation for 20+ shipments a week across air, ocean and road, holding a 95% on-time delivery rate.</li>
+          <li data-i18n="j1b2">Obtained and compared freight quotes from 10+ carriers to support rate decisions on inbound and outbound freight.</li>
+          <li data-i18n="j1b3">Entered freight orders in CargoWise One, working with Sales and Customer Service so details and documents were right the first time.</li>
+          <li data-i18n="j1b4">Tracked shipments in myDHLi and Sales360 CRM, keeping internal teams and stakeholders updated on status and timelines.</li>
+          <li data-i18n="j1b5">Resolved shipment and process issues with Operations, Warehouse and Sales, and maintained KPI dashboards in Power BI for leadership.</li>
         </ul>
       </li>
 
       <li class="job" data-reveal>
         <div class="job__head">
-          <h3 class="job__title">Assistant Site Manager</h3>
-          <div class="job__date">FEB 2023 – DEC 2023</div>
+          <h3 data-i18n="j2t" class="job__title">Assistant Site Manager</h3>
+          <div data-i18n="j2d" class="job__date">FEB 2023 – DEC 2023</div>
         </div>
         <div class="job__org">Société de Constructions et de Bâtiments (SCB SA)</div>
         <ul class="bullets">
-          <li>Supported project management on Lotissement Masoandro, a 100+ high-end villa development in Ivandry, coordinating materials, equipment and schedules with 5+ suppliers and transport vendors.</li>
-          <li>Used AutoCAD and Revit to review architectural and site drawings for accurate material planning with the design team.</li>
-          <li>Tracked material movement between suppliers and site teams and organized incoming deliveries, catching shortages before they hit the timeline.</li>
-          <li>Kept stakeholders informed with progress and inventory reports in Excel.</li>
+          <li data-i18n="j2b1">Supported project management on Lotissement Masoandro, a 100+ high-end villa development in Ivandry, coordinating materials, equipment and schedules with 5+ suppliers and transport vendors.</li>
+          <li data-i18n="j2b2">Used AutoCAD and Revit to review architectural and site drawings for accurate material planning with the design team.</li>
+          <li data-i18n="j2b3">Tracked material movement between suppliers and site teams and organized incoming deliveries, catching shortages before they hit the timeline.</li>
+          <li data-i18n="j2b4">Kept stakeholders informed with progress and inventory reports in Excel.</li>
         </ul>
       </li>
 
       <li class="job" data-reveal>
         <div class="job__head">
-          <h3 class="job__title">Site Storekeeper (Internships)</h3>
-          <div class="job__date">APR 2022 – JUL 2022</div>
+          <h3 data-i18n="j3t" class="job__title">Site Storekeeper (Internships)</h3>
+          <div data-i18n="j3d" class="job__date">APR 2022 – JUL 2022</div>
         </div>
         <div class="job__org">SCB SA / CIMELTA</div>
         <ul class="bullets">
-          <li>Inventory tracking, warehouse organization and material movement on a 1,400 m³ gas-oil storage tank project in an ATEX explosive-risk zone, under strict safety protocols.</li>
+          <li data-i18n="j3b1">Inventory tracking, warehouse organization and material movement on a 1,400 m³ gas-oil storage tank project in an ATEX explosive-risk zone, under strict safety protocols.</li>
         </ul>
       </li>
 
       <li class="job" data-reveal>
         <div class="job__head">
-          <h3 class="job__title">Operations Assistant</h3>
-          <div class="job__date">JUL 2021 – JUL 2025</div>
+          <h3 data-i18n="j4t" class="job__title">Operations Assistant</h3>
+          <div data-i18n="j4d" class="job__date">JUL 2021 – JUL 2025</div>
         </div>
-        <div class="job__org">Société de Distribution de Matériaux de Construction <small>· Part-time, concurrent with other roles</small></div>
+        <div class="job__org">Société de Distribution de Matériaux de Construction <small data-i18n="j4note">· Part-time, concurrent with other roles</small></div>
         <ul class="bullets">
-          <li>Managed inventory for 20+ building-material SKUs and coordinated suppliers and transport providers for 100+ deliveries a month.</li>
-          <li>Ran regular counts and reconciliations, and built inventory tracking tools in Excel and Google Sheets.</li>
-          <li>Requisitioned and tracked incoming materials, with consistent reporting to stakeholders across locations.</li>
+          <li data-i18n="j4b1">Managed inventory for 20+ building-material SKUs and coordinated suppliers and transport providers for 100+ deliveries a month.</li>
+          <li data-i18n="j4b2">Ran regular counts and reconciliations, and built inventory tracking tools in Excel and Google Sheets.</li>
+          <li data-i18n="j4b3">Requisitioned and tracked incoming materials, with consistent reporting to stakeholders across locations.</li>
         </ul>
       </li>
     </ol>
   </section>
 
   <section class="section" id="skills" aria-labelledby="skills-title">
-    <h2 class="section__title" data-reveal id="skills-title">Skills &amp; Expertise</h2>
+    <h2 data-i18n="hSkills" class="section__title" data-reveal id="skills-title">Skills &amp; Expertise</h2>
     <div class="grid grid--skills">
       <div class="card" data-reveal>
-        <h3>Freight &amp; logistics</h3>
+        <h3 data-i18n="s1">Freight &amp; logistics</h3>
         <ul class="skill-list">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Freight quoting &amp; carrier coordination</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Shipment tracking &amp; delivery management</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Route &amp; transportation scheduling</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Supplier &amp; vendor coordination</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Escalation resolution</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="s1a">Freight quoting &amp; carrier coordination</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="s1b">Shipment tracking &amp; delivery management</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="s1c">Route &amp; transportation scheduling</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="s1d">Supplier &amp; vendor coordination</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="s1e">Escalation resolution</span></li>
         </ul>
       </div>
       <div class="card" data-reveal>
-        <h3>Inventory &amp; warehouse</h3>
+        <h3 data-i18n="s2">Inventory &amp; warehouse</h3>
         <ul class="skill-list">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Inventory replenishment</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Stock counts &amp; reconciliation</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Warehouse organization</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Materials &amp; equipment requisitioning</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>SOPs &amp; work order processing</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="s2a">Inventory replenishment</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="s2b">Stock counts &amp; reconciliation</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="s2c">Warehouse organization</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="s2d">Materials &amp; equipment requisitioning</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="s2e">SOPs &amp; work order processing</span></li>
         </ul>
       </div>
       <div class="card" data-reveal>
-        <h3>Systems &amp; data</h3>
+        <h3 data-i18n="s3">Systems &amp; data</h3>
         <ul class="skill-list">
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span><b>CargoWise One</b></span></li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span><b>SAP S/4HANA</b></span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span><b>Power BI</b> · DAX, KPI dashboards</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span><b>Advanced Excel</b> · MOS certified</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span><b>AutoCAD</b> &amp; <b>Revit</b></span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="s3c"><b>Power BI</b> · DAX, KPI dashboards</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="s3d"><b>Advanced Excel</b> · MOS certified</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="s3e"><b>AutoCAD</b> &amp; <b>Revit</b></span></li>
         </ul>
       </div>
     </div>
   </section>
 
   <section class="section" id="projects" aria-labelledby="projects-title">
-    <h2 class="section__title" data-reveal id="projects-title">Academic Projects</h2>
+    <h2 data-i18n="hProjects" class="section__title" data-reveal id="projects-title">Academic Projects</h2>
     <div class="grid grid--projects">
       <article class="project" data-reveal>
         <div class="project__tag"><span>ERP</span><span>2026</span></div>
         <h3>ERPsim, SAP S/4HANA</h3>
-        <div class="project__sub">Durham College · team</div>
-        <p>Managed purchasing, inventory and sales inside SAP S/4HANA, hands-on with the same class of ERP used for replenishment and reporting. Every decision showed up instantly in the numbers.</p>
+        <div data-i18n="pr1s" class="project__sub">Durham College · team</div>
+        <p data-i18n="pr1">Managed purchasing, inventory and sales inside SAP S/4HANA, hands-on with the same class of ERP used for replenishment and reporting. Every decision showed up instantly in the numbers.</p>
       </article>
       <article class="project" data-reveal>
         <div class="project__tag"><span>Simulation</span><span>2026</span></div>
         <h3>The Fresh Connection</h3>
-        <div class="project__sub">Durham College · role: VP Purchasing</div>
-        <p>Owned sourcing and purchasing decisions in a competitive supply chain simulation, with ROI as the scorecard, and learned to defend those calls to teammates with opposing goals.</p>
+        <div data-i18n="pr2s" class="project__sub">Durham College · role: VP Purchasing</div>
+        <p data-i18n="pr2">Owned sourcing and purchasing decisions in a competitive supply chain simulation, with ROI as the scorecard, and learned to defend those calls to teammates with opposing goals.</p>
       </article>
       <article class="project" data-reveal>
         <div class="project__tag"><span>International</span><span>2026</span></div>
-        <h3>COIL Project</h3>
-        <div class="project__sub">Durham College · international team</div>
-        <p>A global supply chain sustainability initiative run with students from other countries and time zones. Working remotely, in English, with different ways of doing things, exactly the job.</p>
+        <h3 data-i18n="pr3t">COIL Project</h3>
+        <div data-i18n="pr3s" class="project__sub">Durham College · international team</div>
+        <p data-i18n="pr3">A global supply chain sustainability initiative run with students from other countries and time zones. Working remotely, in English, with different ways of doing things, exactly the job.</p>
       </article>
     </div>
   </section>
@@ -560,37 +577,37 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
   <section class="section" id="education" aria-labelledby="education-title">
     <div class="edu">
       <div data-reveal>
-        <h2 class="section__title" id="education-title">Education</h2>
+        <h2 data-i18n="navEdu" class="section__title" id="education-title">Education</h2>
         <div class="degrees">
           <div>
-            <h3 class="degree__title">Graduate Certificate, Supply Chain Management – Global</h3>
-            <div class="degree__school">Durham College, Ontario, Canada</div>
-            <div class="degree__date">JAN 2026 – AUG 2026</div>
-            <p class="degree__desc">Supply chain optimization, global logistics &amp; transport, SAP S/4HANA, materials management &amp; ERP, business analytics (Power BI, Power Query, DAX), advanced Excel.</p>
+            <h3 data-i18n="e1t" class="degree__title">Graduate Certificate, Supply Chain Management – Global</h3>
+            <div data-i18n="e1s" class="degree__school">Durham College, Ontario, Canada</div>
+            <div data-i18n="e1d" class="degree__date">JAN 2026 – AUG 2026</div>
+            <p data-i18n="e1" class="degree__desc">Supply chain optimization, global logistics &amp; transport, SAP S/4HANA, materials management &amp; ERP, business analytics (Power BI, Power Query, DAX), advanced Excel.</p>
           </div>
           <div>
-            <h3 class="degree__title">Bachelor's Degree, Transportation and Logistics</h3>
+            <h3 data-i18n="e2t" class="degree__title">Bachelor's Degree, Transportation and Logistics</h3>
             <div class="degree__school">Institut Supérieur de Technologie d'Antananarivo, Madagascar</div>
-            <div class="degree__date">JAN 2024 – JUL 2025</div>
-            <p class="degree__desc">Air and maritime transport, regulations, logistics strategy &amp; service quality, transport economics, warehousing. Concluded with a supervised project and dissertation.</p>
+            <div data-i18n="e2d" class="degree__date">JAN 2024 – JUL 2025</div>
+            <p data-i18n="e2" class="degree__desc">Air and maritime transport, regulations, logistics strategy &amp; service quality, transport economics, warehousing. Concluded with a supervised project and dissertation.</p>
           </div>
           <div>
-            <h3 class="degree__title">College Diploma, Civil Engineering</h3>
+            <h3 data-i18n="e3t" class="degree__title">College Diploma, Civil Engineering</h3>
             <div class="degree__school">Institut Supérieur de Technologie d'Antananarivo, Madagascar</div>
-            <div class="degree__date">MAR 2021 – OCT 2023</div>
-            <p class="degree__desc">Site organization, quantity surveying, project management &amp; public procurement, construction materials, occupational health and safety.</p>
+            <div data-i18n="e3d" class="degree__date">MAR 2021 – OCT 2023</div>
+            <p data-i18n="e3" class="degree__desc">Site organization, quantity surveying, project management &amp; public procurement, construction materials, occupational health and safety.</p>
           </div>
         </div>
       </div>
       <div data-reveal>
         <h2 class="section__title">Certifications</h2>
         <ul class="certs">
-          <li class="cert"><span class="cert__name">Microsoft Office Specialist, Excel Associate</span><span class="cert__date">APR 2026 – APR 2031</span></li>
-          <li class="cert"><span class="cert__name">Lean Six Sigma, Yellow Belt</span><span class="cert__date">MAR 2026</span></li>
-          <li class="cert"><span class="cert__name">TEF Canada, French C1 (NCLC 9)</span><span class="cert__date">C1 / B2</span></li>
+          <li class="cert"><span class="cert__name">Microsoft Office Specialist, Excel Associate</span><span data-i18n="c1d" class="cert__date">APR 2026 – APR 2031</span></li>
+          <li class="cert"><span data-i18n="c2" class="cert__name">Lean Six Sigma, Yellow Belt</span><span data-i18n="c2d" class="cert__date">MAR 2026</span></li>
+          <li class="cert"><span data-i18n="c3" class="cert__name">TEF Canada, French C1 (NCLC 9)</span><span class="cert__date">C1 / B2</span></li>
         </ul>
         <div class="members">
-          <h3>Professional memberships <span>· since Mar 2026</span></h3>
+          <h3 data-i18n="mem">Professional memberships <span>· since Mar 2026</span></h3>
           <ul>
             <li><b>ASCM</b>, Association for Supply Chain Management</li>
             <li><b>NISCL</b>, National Institute of Supply Chain Leaders</li>
@@ -604,8 +621,8 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
 
   <section class="section contact" id="contact" aria-labelledby="contact-title">
     <div data-reveal>
-      <h2 id="contact-title">Let's Connect</h2>
-      <p>Open to logistics coordinator, procurement and supply chain roles across Ontario. Always up for a conversation about the field, even without a role on the table.</p>
+      <h2 data-i18n="hContact" id="contact-title">Let's Connect</h2>
+      <p data-i18n="contactP">Open to logistics coordinator, procurement and supply chain roles across Ontario. Always up for a conversation about the field, even without a role on the table.</p>
       <div class="contact__actions">
         <a class="btn btn--primary" href="mailto:rajaonah.mahefa17@gmail.com">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
@@ -618,7 +635,7 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
         <a class="btn btn--subtle" href="https://www.linkedin.com/in/mahefa-rajaonah" target="_blank" rel="noopener">LinkedIn ↗</a>
         <a class="btn btn--subtle" href="assets/Mahefa-Rajaonah-Resume.pdf" download="Mahefa-Rajaonah-Resume.pdf">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
-          Download CV
+          <span data-i18n="cv">Download CV</span>
         </a>
       </div>
     </div>
@@ -664,7 +681,7 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
   const nav = document.getElementById('site-nav');
   const setMenu = open => {
     btn.setAttribute('aria-expanded', String(open));
-    btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    btn.setAttribute('aria-label', open ? t('close') : t('open'));
     nav.classList.toggle('is-open', open);
   };
   btn.addEventListener('click', () => setMenu(btn.getAttribute('aria-expanded') !== 'true'));
@@ -675,15 +692,145 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
   document.addEventListener('click', e => {
     if (nav.classList.contains('is-open') && !e.target.closest('.header')) setMenu(false);
   });
-  window.matchMedia('(min-width: 861px)').addEventListener('change', e => { if (e.matches) setMenu(false); });
+  window.matchMedia('(min-width: 981px)').addEventListener('change', e => { if (e.matches) setMenu(false); });
+
+  // Language (English lives in the markup; French is applied on top)
+  const FR = {
+"skip": "Aller au contenu",
+"navProfile": "Profil",
+"navExp": "Expérience",
+"navSkills": "Compétences",
+"navProjects": "Projets",
+"navEdu": "Formation",
+"navContact": "Contact",
+"badge": "Ouvert aux opportunités",
+"loc": "Oshawa (Ontario), Canada",
+"role": "Coordonnateur logistique<i>·</i>Chaîne d'approvisionnement<i>·</i>Bilingue français et anglais",
+"intro": "J'ai appris la logistique là où elle se voit vraiment&nbsp;: sur un chantier, dans un magasin de stock et à un comptoir de fret international. J'allie aujourd'hui cette expérience terrain à l'ERP, à l'analytique et à la rigueur des processus, pour que chaque commande arrive où elle doit, quand elle le doit.",
+"cv": "Télécharger le CV",
+"cvMeta": "PDF · EN",
+"touch": "Me contacter",
+"statSeek": "Poste recherché",
+"stat1": "Fret, inventaire et gestion des matériaux<br><span>Plus de 4 ans, 2021–2025</span>",
+"stat2": "Logistique et chaîne d'approvisionnement<br><span>Ontario, Canada</span>",
+"stat3": "Certificat d'études supérieures, GCA<br><span>Durham College, 2026</span>",
+"hProfile": "Profil professionnel",
+"p1": "J'ai commencé sur des chantiers, plan en main, à m'assurer que les matériaux arrivaient avant l'équipe. Sur un projet résidentiel de plus de 100 villas pour <strong>SCB SA</strong>, et en parallèle chez un distributeur de matériaux de construction gérant plus de 100 livraisons par mois, j'ai compris à quel point le lien est fragile entre un magasin, un fournisseur et un chantier qui n'attend pas.",
+"p2": "Puis je suis passé au fret. Comme coordonnateur logistique chez <strong>DHL Global Forwarding</strong>, je planifiais des expéditions aériennes, maritimes et routières, et je comparais les soumissions de plus de 10 transporteurs, en travaillant au quotidien dans CargoWise One, myDHLi et Power BI.",
+"p3": "Aujourd'hui à Oshawa, j'ai obtenu un certificat d'études supérieures en gestion de la chaîne d'approvisionnement au Durham College. Il m'a donné la méthode (SAP S/4HANA, analytique, amélioration continue) pour transformer ce que je faisais d'instinct en décisions mesurables. Je travaille couramment en français et en anglais.",
+"grade": "Moyenne, certificat d'études supérieures, Durham College",
+"m1v": "4+ ans",
+"m1": "Fret, inventaire et gestion des matériaux",
+"m2v": "95&nbsp;%",
+"m2": "Taux de livraison à temps chez DHL",
+"m3v": "20+ / sem.",
+"m3": "Expéditions de fret coordonnées",
+"m4": "Bilingue",
+"hExp": "Expérience professionnelle",
+"j1t": "Coordonnateur logistique",
+"j1d": "MAI 2024 – DÉC 2025",
+"j1b1": "Coordination de la planification, des itinéraires et de la documentation de plus de 20 expéditions par semaine (aérien, maritime et routier), avec un taux de livraison à temps de 95&nbsp;%.",
+"j1b2": "Obtention et comparaison de soumissions de plus de 10 transporteurs pour appuyer les décisions tarifaires sur le fret entrant et sortant.",
+"j1b3": "Saisie des commandes de fret dans CargoWise One, en collaboration avec les Ventes et le Service à la clientèle, pour des informations et des documents exacts du premier coup.",
+"j1b4": "Suivi des expéditions dans myDHLi et Sales360 CRM, en tenant les équipes internes et les parties prenantes informées des statuts et des échéanciers.",
+"j1b5": "Résolution des problèmes d'expédition et de processus avec les Opérations, l'Entrepôt et les Ventes, et mise à jour de tableaux de bord d'indicateurs (KPI) dans Power BI pour la direction.",
+"j2t": "Assistant chef de chantier",
+"j2d": "FÉV 2023 – DÉC 2023",
+"j2b1": "Soutien à la gestion du Lotissement Masoandro, un projet de plus de 100 villas haut de gamme à Ivandry&nbsp;: coordination des matériaux, de l'équipement et des échéanciers avec plus de 5 fournisseurs et transporteurs.",
+"j2b2": "Analyse des plans d'architecture et de chantier dans AutoCAD et Revit pour une planification précise des matériaux avec l'équipe de conception.",
+"j2b3": "Suivi des mouvements de matériaux entre fournisseurs et équipes de chantier, et organisation des livraisons entrantes pour repérer les pénuries avant qu'elles ne retardent l'échéancier.",
+"j2b4": "Rapports d'avancement et d'inventaire dans Excel pour tenir les parties prenantes informées.",
+"j3t": "Magasinier de chantier (stages)",
+"j3d": "AVR 2022 – JUIL 2022",
+"j3b1": "Suivi des stocks, organisation de l'entrepôt et mouvements de matériaux sur un projet de réservoir de gazole de 1&nbsp;400&nbsp;m³ en zone à risque d'explosion (ATEX), selon des protocoles de sécurité stricts.",
+"j4t": "Adjoint aux opérations",
+"j4d": "JUIL 2021 – JUIL 2025",
+"j4note": "· Temps partiel, en parallèle d'autres postes",
+"j4b1": "Gestion des stocks de plus de 20 références de matériaux de construction et coordination des fournisseurs et transporteurs pour plus de 100 livraisons par mois.",
+"j4b2": "Inventaires et rapprochements réguliers, et création d'outils de suivi des stocks dans Excel et Google Sheets.",
+"j4b3": "Réquisition et suivi des matériaux entrants, avec des rapports réguliers aux parties prenantes sur plusieurs sites.",
+"hSkills": "Compétences et expertise",
+"s1": "Fret et logistique",
+"s1a": "Cotation du fret et coordination des transporteurs",
+"s1b": "Suivi des expéditions et gestion des livraisons",
+"s1c": "Planification des itinéraires et du transport",
+"s1d": "Coordination des fournisseurs",
+"s1e": "Gestion des escalades",
+"s2": "Inventaire et entrepôt",
+"s2a": "Réapprovisionnement des stocks",
+"s2b": "Inventaires et rapprochements",
+"s2c": "Organisation de l'entrepôt",
+"s2d": "Réquisition de matériaux et d'équipement",
+"s2e": "Procédures (SOP) et bons de travail",
+"s3": "Systèmes et données",
+"s3c": "<b>Power BI</b> · DAX, tableaux de bord KPI",
+"s3d": "<b>Excel avancé</b> · certifié MOS",
+"s3e": "<b>AutoCAD</b> et <b>Revit</b>",
+"hProjects": "Projets d'études",
+"pr1s": "Durham College · en équipe",
+"pr1": "Gestion des achats, des stocks et des ventes dans SAP S/4HANA, le même type d'ERP que celui utilisé pour le réapprovisionnement et les rapports. Chaque décision se reflétait immédiatement dans les chiffres.",
+"pr2s": "Durham College · rôle&nbsp;: VP Achats",
+"pr2": "Responsable des décisions d'approvisionnement et d'achat dans une simulation concurrentielle de chaîne d'approvisionnement, avec le RCI comme indicateur, et apprentissage à défendre ces choix auprès de coéquipiers aux objectifs opposés.",
+"pr3t": "Projet COIL",
+"pr3s": "Durham College · équipe internationale",
+"pr3": "Une initiative de durabilité de la chaîne d'approvisionnement mondiale, menée avec des étudiants d'autres pays et fuseaux horaires. Travail à distance, en anglais, avec des façons de faire différentes&nbsp;: exactement le métier.",
+"e1t": "Certificat d'études supérieures, gestion de la chaîne d'approvisionnement mondiale",
+"e1s": "Durham College (Ontario), Canada",
+"e1d": "JANV 2026 – AOÛT 2026",
+"e1": "Optimisation de la chaîne d'approvisionnement, logistique et transport internationaux, SAP S/4HANA, gestion des matériaux et ERP, analytique d'affaires (Power BI, Power Query, DAX), Excel avancé.",
+"e2t": "Licence, transport et logistique",
+"e2d": "JANV 2024 – JUIL 2025",
+"e2": "Transport aérien et maritime, réglementation, stratégie logistique et qualité de service, économie des transports, entreposage. Conclue par un projet encadré et un mémoire.",
+"e3t": "Diplôme collégial, génie civil",
+"e3d": "MARS 2021 – OCT 2023",
+"e3": "Organisation de chantier, métré, gestion de projet et marchés publics, matériaux de construction, santé et sécurité au travail.",
+"c1d": "AVR 2026 – AVR 2031",
+"c2": "Lean Six Sigma, ceinture jaune",
+"c2d": "MARS 2026",
+"c3": "TEF Canada, français C1 (NCLC 9)",
+"mem": "Associations professionnelles <span>· depuis mars 2026</span>",
+"hContact": "Restons en contact",
+"contactP": "Ouvert aux postes de coordonnateur logistique, d'approvisionnement et de chaîne d'approvisionnement partout en Ontario. Toujours partant pour échanger sur le domaine, même sans poste à pourvoir."
+};
+  const FR_ATTR = {"brandAria": "Mahefa Rajaonah, retour en haut", "navAria": "Principal", "imgAlt": "Portrait de Mahefa Rajaonah", "langAria": "Langue"};
+  const UI = {
+    en: { light: 'Switch to light theme', dark: 'Switch to dark theme', open: 'Open menu', close: 'Close menu',
+          title: 'Mahefa Rajaonah | Logistics Coordinator' },
+    fr: { light: 'Passer au thème clair', dark: 'Passer au thème sombre', open: 'Ouvrir le menu', close: 'Fermer le menu',
+          title: 'Mahefa Rajaonah | Coordonnateur logistique' }
+  };
+  const textEls = [...document.querySelectorAll('[data-i18n]')].map(el => [el, el.innerHTML]);
+  const attrEls = [...document.querySelectorAll('[data-i18n-attr]')].map(el => {
+    const [attr, key] = el.getAttribute('data-i18n-attr').split(':');
+    return [el, attr, key, el.getAttribute(attr)];
+  });
+  const root = document.documentElement;
+  let lang = root.getAttribute('data-lang') === 'fr' ? 'fr' : 'en';
+  const t = key => UI[lang][key];
+  const applyLang = next => {
+    lang = next;
+    root.setAttribute('lang', lang);
+    root.setAttribute('data-lang', lang);
+    textEls.forEach(([el, en]) => { el.innerHTML = lang === 'fr' ? FR[el.getAttribute('data-i18n')] : en; });
+    attrEls.forEach(([el, attr, key, en]) => el.setAttribute(attr, lang === 'fr' ? FR_ATTR[key] : en));
+    document.querySelectorAll('.lang button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
+    document.title = t('title');
+    syncTheme();
+    setMenu(btn.getAttribute('aria-expanded') === 'true');
+  };
+  document.querySelector('.lang').addEventListener('click', e => {
+    const b = e.target.closest('button[data-lang]');
+    if (!b || b.dataset.lang === lang) return;
+    try { localStorage.setItem('lang', b.dataset.lang); } catch (err) {}
+    applyLang(b.dataset.lang);
+  });
 
   // Theme toggle
-  const root = document.documentElement;
   const toggle = document.querySelector('.theme-toggle');
   const meta = document.querySelector('meta[name="theme-color"]');
   const syncTheme = () => {
     const light = root.getAttribute('data-theme') === 'light';
-    toggle.setAttribute('aria-label', light ? 'Switch to dark theme' : 'Switch to light theme');
+    toggle.setAttribute('aria-label', light ? t('dark') : t('light'));
     meta.setAttribute('content', light ? '#F5F7FA' : '#061A2E');
   };
   toggle.addEventListener('click', () => {
@@ -693,7 +840,8 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
     try { localStorage.setItem('theme', next); } catch (e) {}
     syncTheme();
   });
-  syncTheme();
+  applyLang(lang);
+  root.classList.remove('i18n-pending');
 
   // Active section in nav
   const links = new Map([...nav.querySelectorAll('a[href^="#"]')].map(a => [a.getAttribute('href').slice(1), a]));
